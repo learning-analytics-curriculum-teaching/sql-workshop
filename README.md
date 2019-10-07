@@ -15,3 +15,8 @@
 * Under `Initial database name` write `testdb`
 * Uncheck `Automatic backups`
 * Click `Create database`
+
+## Modify Security Group
+
+* Under `Security Groups` click `Inbound` and then `Edit`
+* Add the rule `SQL/Aurora` on `Port 3306` with the `Connection` of `MyIP`
