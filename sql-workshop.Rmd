@@ -1,0 +1,336 @@
+---
+title: "sql-workshop"
+author: "Charles Lang"
+date: "10/16/2019"
+output: html_document
+---
+
+## Connect to AMW MySQL Database
+```{r}
+#install.packages("DBI", "RMySQL")
+
+library(DBI)
+library(RMySQL)
+
+db_user <- 'admin'
+db_password <- 'testsql!'
+db_name <- 'oudb'
+db_host <- 'sqltest.clh43re5lq5h.us-east-1.rds.amazonaws.com'
+db_port <- 3306
+
+mydb <- dbConnect(MySQL(), user = db_user, password = db_password, dbname = db_name, host = db_host, port = db_port)
+
+summary(mydb)
+```
+
+## Load OU Data
+```{r}
+#Student demographic data
+studentInfo <- read.csv("studentInfo.csv", header = TRUE)
+#Student assessment data
+studentAssessment <- read.csv("studentAssessment.csv", header = TRUE)
+#Course data
+courses <- read.csv("courses.csv", header = TRUE)
+studentRegistration <- read.csv("studentRegistration.csv", header = TRUE)
+```
+
+## Write data to the DB using the DBI package
+```{r}
+#List the tables in the DB
+dbListTables(mydb)
+
+#Write a new table to the DB
+dbWriteTable(mydb, "studentInfo", studentInfo)
+dbWriteTable(mydb, "studentAssessment", studentAssessment)
+dbWriteTable(mydb, "courses", courses)
+dbWriteTable(mydb, "studentRegistration", studentRegistration)
+
+#List tables to see that table was added
+dbListTables(mydb)
+
+#Read a particular table
+dbReadTable(mydb, 'studentInfo')
+
+```
+
+## Getting into SQL - READING
+```{r}
+#Query a portion of the database (always returns dataframe)
+dbGetQuery(mydb, "SELECT * FROM studentInfo LIMIT 10;")
+
+dbGetQuery(mydb, "SELECT * FROM studentInfo ORDER BY id_student LIMIT 10;")
+
+dbGetQuery(mydb, "SELECT id_student, gender FROM studentInfo ORDER BY id_student LIMIT 10;") #Order listed will be reflected in order in table
+
+dbGetQuery(mydb, "SELECT id_student AS 'Student ID', gender FROM studentInfo LIMIT 10;") #SQL Standard says quotes for literal strings and double quotes for everything else but that conflicts with R
+
+#Count the number of rows
+dbGetQuery(mydb, "SELECT COUNT(*) FROM studentAssessment;")
+
+#Using a WHERE statement on all columns
+dbGetQuery(mydb, "SELECT COUNT(*) FROM studentAssessment WHERE score > 50;")
+
+#Using a WHERE statement on a single column (will not include missing data)
+dbGetQuery(mydb, "SELECT COUNT(score) FROM studentAssessment WHERE score > 50;")
+
+#Using an AND statement
+dbGetQuery(mydb, "SELECT COUNT(*) FROM studentAssessment WHERE score > 50 AND id_assessment = '1752';")
+
+```
+
+## Getting into SQL - UPDATING
+```{r}
+#Add a row
+dbGetQuery(mydb, "INSERT INTO studentAssessment (id_assessment, id_student, date_submitted, is_banked, score) VALUES ('00001', '1', '20', '0', '50');")
+
+dbGetQuery(mydb, "SELECT COUNT(*) FROM studentAssessment;")
+
+#Add a row with missing values
+dbGetQuery(mydb, "INSERT INTO studentAssessment (id_assessment, id_student, date_submitted) VALUES ('00001', '1', '20');")
+
+#Update a row
+dbGetQuery(mydb, "UPDATE studentAssessment SET score = '20' WHERE id_student = 1;")
+
+dbGetQuery(mydb, "SELECT id_student, score FROM studentAssessment ORDER BY id_student LIMIT 10;")
+
+#Update a row with NULL
+dbGetQuery(mydb, "UPDATE studentAssessment SET score = 'NULL' WHERE id_student = 6516;")
+
+#Delete a row (destructive)
+dbGetQuery(mydb, "DELETE FROM studentAssessment WHERE id_student = 1;")
+
+dbGetQuery(mydb, "SELECT * FROM studentAssessment ORDER BY id_student LIMIT 10;")
+
+#Creating a new table in SQL
+dbGetQuery(mydb,"CREATE TABLE test (
+  score INTEGER, 
+  student TEXT
+  );")
+
+dbListTables(mydb)
+
+#Inserting data into the table
+dbGetQuery(mydb, "INSERT INTO test VALUES ( 10, 'Amy' );")
+dbGetQuery(mydb, "INSERT INTO test VALUES ( 11, 'Jen' );")
+dbGetQuery(mydb, "INSERT INTO test VALUES ( 9, 'Frank' );")
+
+dbGetQuery(mydb, "SELECT * FROM test;")
+
+#Inserting a NULL row
+dbGetQuery(mydb, "INSERT INTO test DEFAULT VALUES;")
+
+dbGetQuery(mydb,"INSERT INTO test (score, student) SELECT score, id_student FROM studentAssessment;")
+
+```
+## Deleting Table
+```{r}
+#Delete a table
+dbGetQuery(mydb, "DROP TABLE test;")
+
+dbGetQuery(mydb, "SELECT * FROM test;") #This should produce an error
+
+#Delete a table if it exists
+dbGetQuery(mydb, "DROP TABLE IF EXISTS test;")
+
+```
+
+# NULL Value
+```{r}
+#NULL is a state (similar to R), represents the lack of a value. But is not compatible with R backend so this code doesn't work as part of dbGetQuery()
+
+#This doesn't work because NULL is not a value
+SELECT * FROM test WHERE score = NULL;
+
+#Instead use
+SELECT * FROM test WHERE score is NULL;
+
+```
+
+# Constraints
+```{r}
+#Create table where student column *cannot* be NULL
+dbGetQuery(mydb,"CREATE TABLE test2 (
+  score INTEGER, 
+  student TEXT NOT NULL
+  );")
+
+dbGetQuery(mydb, "DROP TABLE IF EXISTS test2;")
+
+dbGetQuery(mydb,"CREATE TABLE test2 (
+   score INTEGER DEFAULT 0, 
+   student TEXT
+   );")
+
+dbGetQuery(mydb,"INSERT INTO test2 (score, student) VALUES ('1', 'A');")
+dbGetQuery(mydb,"INSERT INTO test2 (student) VALUES ('B');")
+
+dbGetQuery(mydb, "SELECT * FROM test2;")
+
+dbGetQuery(mydb, "DROP TABLE IF EXISTS test2;")
+
+dbGetQuery(mydb,"CREATE TABLE test2 (
+  score INTEGER UNIQUE, 
+  student TEXT
+  );")
+
+dbGetQuery(mydb,"INSERT INTO test2 (score, student) VALUES ('1', 'A');")
+
+#Error because of unique
+dbGetQuery(mydb,"INSERT INTO test2 (score, student) VALUES ('1', 'A');")
+
+#NULL is exempt
+dbGetQuery(mydb,"INSERT INTO test2 (score, student) VALUES (NULL, 'A');")
+dbGetQuery(mydb,"INSERT INTO test2 (score, student) VALUES (NULL, 'A');")
+
+```
+
+# Adding a column
+```{r}
+dbGetQuery(mydb, "ALTER TABLE test2 ADD email INTEGER DEFAULT 1 ")
+
+dbGetQuery(mydb, "SELECT * FROM test2;")
+
+dbGetQuery(mydb, "DROP TABLE IF EXISTS test2;")
+```
+
+# ID Columns
+```{r}
+dbGetQuery(mydb,"CREATE TABLE test2 (
+  id INTEGER AUTO_INCREMENT PRIMARY KEY, #Not standard syntax
+  score INTEGER, 
+  student TEXT
+  );")
+
+dbGetQuery(mydb,"INSERT INTO test2 (score, student) VALUES (1, 'A');")
+dbGetQuery(mydb,"INSERT INTO test2 (score, student) VALUES (5, 'B');")
+
+dbGetQuery(mydb, "SELECT * FROM test2;")
+
+dbGetQuery(mydb, "DROP TABLE IF EXISTS test2;")
+```
+
+## Filtering (WHERE)
+```{r}
+dbGetQuery(mydb, "SELECT id_student, date_submitted FROM studentAssessment WHERE date_submitted > 550 ORDER BY date_submitted DESC;")
+
+#OR Statement
+dbGetQuery(mydb, "SELECT id_student, date_submitted FROM studentAssessment WHERE date_submitted > 550 OR date_submitted < 2 ORDER BY date_submitted DESC;")
+
+#AND Statement
+dbGetQuery(mydb, "SELECT id_student, date_submitted FROM studentAssessment WHERE date_submitted > 550 AND id_student = 325750 ORDER BY date_submitted DESC;")
+
+#LIKE
+dbGetQuery(mydb, "SELECT id_student, gender, region FROM studentInfo WHERE region LIKE '%Region%';")
+
+#Begin with 'Region'
+dbGetQuery(mydb, "SELECT id_student, gender, region FROM studentInfo WHERE region LIKE 'Region%';")
+
+#End with 'Region'
+dbGetQuery(mydb, "SELECT id_student, gender, region FROM studentInfo WHERE region LIKE '%Region';")
+
+#'c' is the second letter
+dbGetQuery(mydb, "SELECT id_student, gender, region FROM studentInfo WHERE region LIKE '_c%';")
+
+#IN
+dbGetQuery(mydb, "SELECT id_student, gender, region FROM studentInfo WHERE region IN ('Wales','Ireland');")
+
+```
+
+## Removing Duplicates
+```{r}
+dbGetQuery(mydb, "SELECT DISTINCT region FROM studentInfo;")
+
+dbGetQuery(mydb, "SELECT DISTINCT region, gender FROM studentInfo;")
+
+```
+
+## Conditional Expressions (non-standard)
+```{r}
+dbGetQuery(mydb, "CREATE TABLE booltest (a INTEGER, b INTEGER);")
+dbGetQuery(mydb, "INSERT INTO booltest VALUES (1, 0);")
+dbGetQuery(mydb, "SELECT * FROM booltest;")
+
+dbGetQuery(mydb,"SELECT
+  CASE WHEN a THEN 'true' ELSE 'false' END as boolA,
+  CASE WHEN b THEN 'true' ELSE 'false' END as boolB
+  FROM booltest")
+
+dbGetQuery(mydb,"SELECT
+  CASE a WHEN 1 THEN 'true' ELSE 'false' END as boolA,
+  CASE b WHEN 1 THEN 'true' ELSE 'false' END as boolB
+  FROM booltest")
+```
+
+#Relationships (JOIN) - Slide
+```{r}
+dbGetQuery(mydb, "CREATE TABLE left_table (id INTEGER, description TEXT);")
+dbGetQuery(mydb, "CREATE TABLE right_table (id INTEGER, description TEXT);")
+
+dbGetQuery(mydb, "INSERT INTO left_table VALUES ( 1, 'left 01');")
+dbGetQuery(mydb, "INSERT INTO left_table VALUES ( 2, 'left 02');")
+dbGetQuery(mydb, "INSERT INTO left_table VALUES ( 3, 'left 03');")
+dbGetQuery(mydb, "INSERT INTO left_table VALUES ( 4, 'left 04');")
+dbGetQuery(mydb, "INSERT INTO left_table VALUES ( 5, 'left 05');")
+dbGetQuery(mydb, "INSERT INTO left_table VALUES ( 6, 'left 06');")
+dbGetQuery(mydb, "INSERT INTO left_table VALUES ( 7, 'left 07');")
+dbGetQuery(mydb, "INSERT INTO left_table VALUES ( 8, 'left 08');")
+dbGetQuery(mydb, "INSERT INTO left_table VALUES ( 9, 'left 09');")
+
+dbGetQuery(mydb, "INSERT INTO right_table VALUES ( 6, 'left 06');")
+dbGetQuery(mydb, "INSERT INTO right_table VALUES ( 7, 'left 07');")
+dbGetQuery(mydb, "INSERT INTO right_table VALUES ( 8, 'left 08');")
+dbGetQuery(mydb, "INSERT INTO right_table VALUES ( 9, 'left 09');")
+dbGetQuery(mydb, "INSERT INTO right_table VALUES ( 10, 'left 10');")
+dbGetQuery(mydb, "INSERT INTO right_table VALUES ( 11, 'left 11');")
+dbGetQuery(mydb, "INSERT INTO right_table VALUES ( 12, 'left 12');")
+dbGetQuery(mydb, "INSERT INTO right_table VALUES ( 13, 'left 13');")
+dbGetQuery(mydb, "INSERT INTO right_table VALUES ( 14, 'left 14');")
+
+dbGetQuery(mydb, "SELECT * FROM left_table;")
+dbGetQuery(mydb, "SELECT * FROM right_table;")
+
+dbGetQuery(mydb,"SELECT l.description AS left_table, r.description AS right_table 
+           FROM left_table AS l 
+           JOIN right_table AS r ON l.id = r.id")
+
+
+dbGetQuery(mydb,"SELECT sr.code_module AS module, si.region
+          FROM studentInfo AS si
+          JOIN studentRegistration AS sr ON si.id_student = sr.id_student
+          ;")
+
+```
+
+
+```{r}
+#Read Data in Batches
+query  <- dbSendQuery(con, 'select * from ecom')
+
+dbFetch(query, n = 10)
+
+dbFetch(query, n = 10)
+
+#Find the status of a query
+dbHasCompleted(query)
+
+#Get the info of a query
+dbGetInfo(query)
+
+#Latest query
+dbGetStatement(query)
+
+#Rows queried
+dbGetRowCount(query)
+
+#Rows changed by query
+dbGetRowsAffected(query)
+
+#Column info
+dbColumnInfo(query)
+
+#Clear all queries
+dbGetInfo(query)
+dbClearResult(query)
+dbGetInfo(query)
+```
+
