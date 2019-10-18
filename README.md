@@ -1,6 +1,6 @@
 # Columbia SQL Workshop
 
-[Slide Deck]()
+[Slide Deck](https://github.com/learning-analytics-curriculum-teaching/sql-workshop/blob/master/sql_workshop.pdf)
 
 ## Create MySQL Instance on Amazon Web Services
 
