@@ -1,5 +1,7 @@
 # Columbia SQL Workshop
 
+[Slide Deck]()
+
 ## Create MySQL Instance on Amazon Web Services
 
 * Log into your [AWS Management Console](https://console.aws.amazon.com)
