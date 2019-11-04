@@ -51,6 +51,9 @@ dbListTables(mydb)
 #Read a particular table
 dbReadTable(mydb, 'studentInfo')
 
+#EXERCISE 1
+#Make two toy data sets with at least three variables and at least 30 rows each in them. Have a mix of numeric and character variables. Transfer these dataframes to your SQL database using the DBI commands. Name the tables whatever you like.
+
 ```
 
 ## Getting into SQL - READING
@@ -60,7 +63,7 @@ dbGetQuery(mydb, "SELECT * FROM studentInfo LIMIT 10;")
 
 dbGetQuery(mydb, "SELECT * FROM studentInfo ORDER BY id_student LIMIT 10;")
 
-dbGetQuery(mydb, "SELECT id_student, gender FROM studentInfo ORDER BY id_student LIMIT 10;") #Order listed will be reflected in order in table
+dbGetQuery(mydb, "SELECT id_student, gender FROM studentInfo ORDER BY id_student DESC LIMIT 10;") #Order listed will be reflected in order in table
 
 dbGetQuery(mydb, "SELECT id_student AS 'Student ID', gender FROM studentInfo LIMIT 10;") #SQL Standard says quotes for literal strings and double quotes for everything else but that conflicts with R
 
@@ -76,17 +79,32 @@ dbGetQuery(mydb, "SELECT COUNT(score) FROM studentAssessment WHERE score > 50;")
 #Using an AND statement
 dbGetQuery(mydb, "SELECT COUNT(*) FROM studentAssessment WHERE score > 50 AND id_assessment = '1752';")
 
+#EXERCISE 2
+#Read one of your toy data tables, make sure the output is ordered in descending order, you rename one of the variables and the output is limited to the first 20 rows.
+
+#Read the other table according to a condition of one of the variables.
+
 ```
 
 ## Getting into SQL - UPDATING
 ```{r}
+#Count rows
+dbGetQuery(mydb, "SELECT COUNT(*) FROM studentAssessment;")
+
 #Add a row
 dbGetQuery(mydb, "INSERT INTO studentAssessment (id_assessment, id_student, date_submitted, is_banked, score) VALUES ('00001', '1', '20', '0', '50');")
 
+#Count rows again
 dbGetQuery(mydb, "SELECT COUNT(*) FROM studentAssessment;")
+
+#View inserted row
+dbGetQuery(mydb, "SELECT * FROM studentAssessment ORDER BY id_student LIMIT 10;")
 
 #Add a row with missing values
 dbGetQuery(mydb, "INSERT INTO studentAssessment (id_assessment, id_student, date_submitted) VALUES ('00001', '1', '20');")
+
+#View inserted row
+dbGetQuery(mydb, "SELECT * FROM studentAssessment ORDER BY id_student LIMIT 10;")
 
 #Update a row
 dbGetQuery(mydb, "UPDATE studentAssessment SET score = '20' WHERE id_student = 1;")
@@ -101,6 +119,14 @@ dbGetQuery(mydb, "DELETE FROM studentAssessment WHERE id_student = 1;")
 
 dbGetQuery(mydb, "SELECT * FROM studentAssessment ORDER BY id_student LIMIT 10;")
 
+#EXERCISE 3
+#Insert a new row in one of your toy data tables leaving one variable empty. Change one value in your other table. Display your new tables. Delete the row you edited and the row you inserted. 
+
+
+```
+
+## Add/Deleting Table
+```{r}
 #Creating a new table in SQL
 dbGetQuery(mydb,"CREATE TABLE test (
   score INTEGER, 
@@ -121,9 +147,6 @@ dbGetQuery(mydb, "INSERT INTO test DEFAULT VALUES;")
 
 dbGetQuery(mydb,"INSERT INTO test (score, student) SELECT score, id_student FROM studentAssessment;")
 
-```
-## Deleting Table
-```{r}
 #Delete a table
 dbGetQuery(mydb, "DROP TABLE test;")
 
@@ -131,6 +154,9 @@ dbGetQuery(mydb, "SELECT * FROM test;") #This should produce an error
 
 #Delete a table if it exists
 dbGetQuery(mydb, "DROP TABLE IF EXISTS test;")
+
+#EXERCISE 4
+#Create a table that is exactly the same as your first toy data table but this time use SQL commands. Display your new table. Then delete the original table. 
 
 ```
 
@@ -182,16 +208,26 @@ dbGetQuery(mydb,"INSERT INTO test2 (score, student) VALUES ('1', 'A');")
 dbGetQuery(mydb,"INSERT INTO test2 (score, student) VALUES (NULL, 'A');")
 dbGetQuery(mydb,"INSERT INTO test2 (score, student) VALUES (NULL, 'A');")
 
+#EXERCISE 5
+#Recreate one of your toy data tables with the constraint that for one of the integer variablesthe default value will be zero. Test your table by inserting some empty values. Display your new tables. Then delete your table.  
+
 ```
 
-# Adding a column
+
+# Adding a column with a default value
 ```{r}
-dbGetQuery(mydb, "ALTER TABLE test2 ADD email INTEGER DEFAULT 1 ")
+#Add a column with default value 1
+dbGetQuery(mydb, "ALTER TABLE studentAssessment ADD email INTEGER DEFAULT 1 ")
 
-dbGetQuery(mydb, "SELECT * FROM test2;")
+dbGetQuery(mydb, "SELECT * FROM studentAssessment LIMIT 10;")
 
-dbGetQuery(mydb, "DROP TABLE IF EXISTS test2;")
+#Delete a column
+dbGetQuery(mydb, "ALTER TABLE studentAssessment DROP COLUMN email;")
+
+#EXERCISE 6
+#Add a column to one of your toy data tables with a default value of 3. Display your new table. Delete this column.
 ```
+
 
 # ID Columns
 ```{r}
@@ -207,6 +243,10 @@ dbGetQuery(mydb,"INSERT INTO test2 (score, student) VALUES (5, 'B');")
 dbGetQuery(mydb, "SELECT * FROM test2;")
 
 dbGetQuery(mydb, "DROP TABLE IF EXISTS test2;")
+
+#EXERCISE 7
+#Create a new table with four variables and a primary key that is a sequential id value.
+
 ```
 
 ## Filtering (WHERE)
@@ -234,6 +274,9 @@ dbGetQuery(mydb, "SELECT id_student, gender, region FROM studentInfo WHERE regio
 #IN
 dbGetQuery(mydb, "SELECT id_student, gender, region FROM studentInfo WHERE region IN ('Wales','Ireland');")
 
+#EXERCISE 8
+#Query one of your original toy data tables, for two different conditions. 
+
 ```
 
 ## Removing Duplicates
@@ -241,6 +284,9 @@ dbGetQuery(mydb, "SELECT id_student, gender, region FROM studentInfo WHERE regio
 dbGetQuery(mydb, "SELECT DISTINCT region FROM studentInfo;")
 
 dbGetQuery(mydb, "SELECT DISTINCT region, gender FROM studentInfo;")
+
+#EXERCISE 9
+#Insert a duplicate row into one of your toy data tables. Then query the table without including duplicates.
 
 ```
 
@@ -261,8 +307,16 @@ dbGetQuery(mydb,"SELECT
   FROM booltest")
 ```
 
-#Relationships (JOIN) - Slide
+#Relationships (JOIN) - *Slide*
 ```{r}
+
+#This will take a while because of the architecture we are using
+dbGetQuery(mydb,"SELECT id_student, gender, region, date_registration
+          FROM studentInfo
+          JOIN studentRegistration
+          ON studentInfo.id_student = studentRegistration.id_student
+          ;")
+
 dbGetQuery(mydb, "CREATE TABLE left_table (id INTEGER, description TEXT);")
 dbGetQuery(mydb, "CREATE TABLE right_table (id INTEGER, description TEXT);")
 
@@ -293,44 +347,22 @@ dbGetQuery(mydb,"SELECT l.description AS left_table, r.description AS right_tabl
            FROM left_table AS l 
            JOIN right_table AS r ON l.id = r.id")
 
+dbGetQuery(mydb,"SELECT l.description AS left_table, r.description AS right_table 
+           FROM left_table AS l 
+           RIGHT JOIN right_table AS r ON l.id = r.id")
 
-dbGetQuery(mydb,"SELECT sr.code_module AS module, si.region
-          FROM studentInfo AS si
-          JOIN studentRegistration AS sr ON si.id_student = sr.id_student
-          ;")
+dbGetQuery(mydb,"SELECT l.description AS left_table, r.description AS right_table 
+           FROM left_table AS l 
+           LEFT JOIN right_table AS r ON l.id = r.id")
 
-```
+#Union
+dbGetQuery(mydb, "SELECT * FROM left_table
+           UNION
+           SELECT * FROM right_table;")
 
 
-```{r}
-#Read Data in Batches
-query  <- dbSendQuery(con, 'select * from ecom')
+#EXERCISE 10
+# Create an a common id variable in your two toy data tables. Then do join those tables so that your query returns all the values from one table and only those that match from the other. 
 
-dbFetch(query, n = 10)
-
-dbFetch(query, n = 10)
-
-#Find the status of a query
-dbHasCompleted(query)
-
-#Get the info of a query
-dbGetInfo(query)
-
-#Latest query
-dbGetStatement(query)
-
-#Rows queried
-dbGetRowCount(query)
-
-#Rows changed by query
-dbGetRowsAffected(query)
-
-#Column info
-dbColumnInfo(query)
-
-#Clear all queries
-dbGetInfo(query)
-dbClearResult(query)
-dbGetInfo(query)
 ```
 
