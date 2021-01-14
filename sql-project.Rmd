@@ -1,11 +1,12 @@
 ---
 title: "sql-workshop"
 author: "Charles Lang"
-date: "10/16/2019"
 output: html_document
 ---
 
-## Connect to AMW MySQL Database
+Before you follow the directions below, please take a screenshot of your AWS console showing the running database and upload it to your repo.
+
+## Connect to AWS MySQL Database
 ```{r}
 #install.packages("DBI", "RMySQL")
 
@@ -15,7 +16,7 @@ library(RMySQL)
 db_user <- 'admin'
 db_password <- 'testsql!'
 db_name <- 'oudb'
-db_host <- 'sqltest.clh43re5lq5h.us-east-1.rds.amazonaws.com'
+db_host <- 'database-1.clh43re5lq5h.us-east-1.rds.amazonaws.com'
 db_port <- 3306
 
 mydb <- dbConnect(MySQL(), user = db_user, password = db_password, dbname = db_name, host = db_host, port = db_port)
@@ -143,17 +144,17 @@ dbGetQuery(mydb, "INSERT INTO test VALUES ( 9, 'Frank' );")
 dbGetQuery(mydb, "SELECT * FROM test;")
 
 #Inserting a NULL row
-dbGetQuery(mydb, "INSERT INTO test DEFAULT VALUES;")
+dbGetQuery(mydb, "INSERT INTO test DEFAULT VALUES;") #Will not work use instead:
 
 dbGetQuery(mydb,"INSERT INTO test (score, student) SELECT score, id_student FROM studentAssessment;")
 
 #Delete a table
 dbGetQuery(mydb, "DROP TABLE test;")
 
-dbGetQuery(mydb, "SELECT * FROM test;") #This should produce an error
+dbGetQuery(mydb, "SELECT * FROM test;") #This should produce an error since your table no longer exists
 
 #Delete a table if it exists
-dbGetQuery(mydb, "DROP TABLE IF EXISTS test;")
+dbGetQuery(mydb, "DROP TABLE IF EXISTS test;") #No error since it is only if it exists
 
 #EXERCISE 4
 #Create a table that is exactly the same as your first toy data table but this time use SQL commands. Display your new table. Then delete the original table. 
@@ -231,18 +232,18 @@ dbGetQuery(mydb, "ALTER TABLE studentAssessment DROP COLUMN email;")
 
 # ID Columns
 ```{r}
-dbGetQuery(mydb,"CREATE TABLE test2 (
+dbGetQuery(mydb,"CREATE TABLE test3 (
   id INTEGER AUTO_INCREMENT PRIMARY KEY, #Not standard syntax
   score INTEGER, 
   student TEXT
   );")
 
-dbGetQuery(mydb,"INSERT INTO test2 (score, student) VALUES (1, 'A');")
-dbGetQuery(mydb,"INSERT INTO test2 (score, student) VALUES (5, 'B');")
+dbGetQuery(mydb,"INSERT INTO test3 (score, student) VALUES (1, 'A');")
+dbGetQuery(mydb,"INSERT INTO test3 (score, student) VALUES (5, 'B');")
 
-dbGetQuery(mydb, "SELECT * FROM test2;")
+dbGetQuery(mydb, "SELECT * FROM test3;")
 
-dbGetQuery(mydb, "DROP TABLE IF EXISTS test2;")
+dbGetQuery(mydb, "DROP TABLE IF EXISTS test3;")
 
 #EXERCISE 7
 #Create a new table with four variables and a primary key that is a sequential id value.
@@ -310,12 +311,7 @@ dbGetQuery(mydb,"SELECT
 #Relationships (JOIN) - *Slide*
 ```{r}
 
-#This will take a while because of the architecture we are using
-dbGetQuery(mydb,"SELECT id_student, gender, region, date_registration
-          FROM studentInfo
-          JOIN studentRegistration
-          ON studentInfo.id_student = studentRegistration.id_student
-          ;")
+#Create two tables with matches and join them
 
 dbGetQuery(mydb, "CREATE TABLE left_table (id INTEGER, description TEXT);")
 dbGetQuery(mydb, "CREATE TABLE right_table (id INTEGER, description TEXT);")
@@ -362,7 +358,24 @@ dbGetQuery(mydb, "SELECT * FROM left_table
 
 
 #EXERCISE 10
-# Create an a common id variable in your two toy data tables. Then do join those tables so that your query returns all the values from one table and only those that match from the other. 
+# Create a common id variable in your two toy data tables. Then join those tables so that your query returns all the values from one table and only those that match from the other. 
+
+```
+```{r}
+#Now disconnect from your database
+dbDisconnect(mydb)
+
+#Then retunr to your AWS console and:
+
+#1. Click on "Actions" and then "Stop"
+#2. Do NOT make a snapshot
+#3 Click on "Actions" again and click "Delete"
+#4. Unclick "Make a final snapshot"
+#5. Clicl "I acknowledge that upon instance deletion, automated backups, including system snapshots and point-in-time recovery, will no longer be available."
+#6. Type "delete me" into the field
+
+#Failure to follow these steps could result in charges to your credit card.
+
 
 ```
 
