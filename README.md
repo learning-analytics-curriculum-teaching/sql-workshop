@@ -24,7 +24,7 @@ In this unit you will learn the basic ideas behind relational databases and SQL.
 
 ## Project: AWS Database and SQL
 
-Please *fork* and *clone* this repository to your computer.
+Please *fork* and *clone* this repository to your computer. If you are unfamiliar with this process you must sign up for office hours.
 
 Then you will need to create an account with AWS. This will require a credit card although we will only be using free services. If you already have an Amazpon account you can use that account.
 
