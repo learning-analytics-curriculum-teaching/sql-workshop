@@ -62,4 +62,6 @@ Once you have created an account follow the directions below, these steps are al
 
 ## Submission
 
-* Once you have completed the project please commit and pull request the repository back to the main branch. Please be sure to include your Rmd file and your screenshot of the AWS console page. The due date for this project is *January 27 by 5:00pm EDT*.
+* Once you have completed the project please commit and pull request the repository back to the main branch. Please be sure to include your Rmd file and your screenshot of the AWS console page. The due date for this project is *January 27 by 5:00pm EDT*. 
+
+Don't forget to delete your AWS database so you don't get charged any money!
