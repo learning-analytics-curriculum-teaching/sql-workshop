@@ -19,7 +19,7 @@ In this unit you will learn the basic ideas behind relational databases and SQL.
 
 [Overview of Amazon Web Services](https://docs.aws.amazon.com/whitepapers/latest/aws-overview/introduction.html)
 
-[AWS](https://aws.amazon.com/)
+[AWS](https://aws.amazon.com/)  
 [AWS China](https://www.amazonaws.cn/?nc1=f_ls)
 
 ## Project: AWS Database and SQL
