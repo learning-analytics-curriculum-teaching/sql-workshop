@@ -1,6 +1,6 @@
 # SQL Database Setup
 
-[Slide Deck](https://github.com/learning-analytics-curriculum-teaching/sql-workshop/blob/master/sql_workshop.pdf)
+[Slide Deck](https://github.com/la-process-and-theory/sql-db-setup/blob/master/HUDK4051-SQL.pdf)
 
 ## Create MySQL Instance on Amazon Web Services
 
@@ -10,11 +10,11 @@
 * Under `Choose a database creation method` click `Standard Create`
 * Under `Engine options` choose `MySQL`
 * Under `Templates` choose `Free tier`
-* Under `Settings` name your `DB instance identifier` as `sqltest`
+* Under `Settings` name your `DB instance identifier` as `database-1`
 * Under `Credential settings` create a username and password combination and write it down (you will need it later)
 * Under `Connectivity` expand `Additional connectivity configuration` to show additional menu items and make sure that `Publicly accessible` is checked `Yes`
 * Expand the `Additional configuration` menu
-* Under `Initial database name` write `testdb`
+* Under `Initial database name` write `oudb`
 * Uncheck `Automatic backups`
 * Click `Create database`
 
