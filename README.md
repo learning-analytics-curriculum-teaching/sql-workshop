@@ -2,16 +2,14 @@
 
 Relational databases are the backbone of data science and the language that we use to communicate with them is called SQL. The SQL test is a common component for data-adjacenemnt jobs within industry, government and the education sector. It is a useful tool that some argue [spawned the field of data science](https://www.kdnuggets.com/gpspubs/sigkdd-explorations-kdd-10-years.html). Before Big Data was a thing, Knowledge Discovery in Databases (KDD) used simple SQL queries to investigate and understand the nature of the large amounts of data that were being collected by governments and companies. The humble SQL test now torments the budding data scientist as a right of passage in the job search process.
 
+In this unit you will learn the basic ideas behind relational databases and SQL. You will setup a database in Amazon Web Services and then connect to it through RStudio. You will then load data into your database and run SQL queries on that data.
+
 ## Goals for this Unit
 
 * Be able to discuss an overview of relational datanases and the purpose of SQL
 * Be able to spin up an AWS instance and load a SQL database into it
 * Be able to connect to the database through RStudio/R using the DBI package
 * Be able to run basic SQL commands in RStudio using the RMySQL package
-
-## Goals for this unit
-
-In this unit you will learn the basic ideas behind relational databases and SQL. You will setup a database in Amazon Web Services and then connect to it through RStudio. You will then load data into your database and run SQL queries on that data.
 
 ## Resources
 
@@ -62,6 +60,6 @@ Once you have created an account follow the directions below, these steps are al
 
 ## Submission
 
-* Once you have completed the project please commit and pull request the repository back to the main branch. Please be sure to include your Rmd file and your screenshot of the AWS console page. The due date for this project is *January 27 by 5:00pm EDT*. 
+* Once you have completed the project please commit and pull request the repository back to the main branch. Please be sure to include your Rmd file and your screenshot of the AWS console page. The due date for this project is **January 27 by 5:00pm EDT**. 
 
 Don't forget to delete your AWS database so you don't get charged any money!
