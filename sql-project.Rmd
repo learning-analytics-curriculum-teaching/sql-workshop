@@ -16,7 +16,7 @@ library(RMySQL)
 db_user <- 'admin'
 db_password <- 'testsql!'
 db_name <- 'oudb'
-db_host <- 'database-1.clh43re5lq5h.us-east-1.rds.amazonaws.com'
+db_host <- 'PASTE YOUR ENDPOINT HERE'
 db_port <- 3306
 
 mydb <- dbConnect(MySQL(), user = db_user, password = db_password, dbname = db_name, host = db_host, port = db_port)
