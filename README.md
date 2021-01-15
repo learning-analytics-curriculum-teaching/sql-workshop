@@ -13,6 +13,8 @@ In this unit you will learn the basic ideas behind relational databases and SQL.
 
 ## Resources
 
+[![Introduction to Relational Databases & SQL](https://img.youtube.com/vi/G-rXRbdE7ow/0.jpg)](https://youtu.be/G-rXRbdE7ow)
+
 [Video Slide Deck](https://github.com/la-process-and-theory/sql-db-setup/blob/master/HUDK4051-SQL.pdf)
 
 [SQL Cheat Sheet](https://mariadb.com/kb/en/basic-sql-statements/)
@@ -60,6 +62,10 @@ Once you have created an account follow the directions below, these steps are al
 
 ## Submission
 
-* Once you have completed the project please commit and pull request the repository back to the main branch. Please be sure to include your Rmd file and your screenshot of the AWS console page. The due date for this project is **January 27 by 5:00pm EDT**. 
+* Once you have completed the project please commit and pull request the repository back to the main branch. Please be sure to include your Rmd file and your screenshot of the AWS console page. The due date for this project is **January 27 by 5:00pm EDT**. Don't forget to delete your AWS database so you don't get charged any money!
 
-Don't forget to delete your AWS database so you don't get charged any money!
+## Knowledge Check
+
+[After you submit please complete the knowledge check quiz located here](https://tccolumbia.qualtrics.com/jfe/form/SV_2i3mluBkpyjW0Um)
+
+
