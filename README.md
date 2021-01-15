@@ -15,6 +15,10 @@ In this unit you will learn the basic ideas behind relational databases and SQL.
 
 [![Introduction to Relational Databases & SQL](https://img.youtube.com/vi/G-rXRbdE7ow/0.jpg)](https://youtu.be/G-rXRbdE7ow)
 
+[Transcript](https://github.com/la-process-and-theory/sql-db-setup/blob/master/hudk4051-sql-intro.rtf)
+
+[![AWS Setup Instructions](https://img.youtube.com/vi/JnADtoprFMM/0.jpg)](https://youtu.be/JnADtoprFMM)
+
 [Video Slide Deck](https://github.com/la-process-and-theory/sql-db-setup/blob/master/HUDK4051-SQL.pdf)
 
 [SQL Cheat Sheet](https://mariadb.com/kb/en/basic-sql-statements/)

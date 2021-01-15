@@ -16,7 +16,7 @@ library(RMySQL)
 db_user <- 'admin'
 db_password <- 'testsql!'
 db_name <- 'oudb'
-db_host <- 'YOUR ENDPOINT'
+db_host <- 'database-1.clh43re5lq5h.us-east-1.rds.amazonaws.com'
 db_port <- 3306
 
 mydb <- dbConnect(MySQL(), user = db_user, password = db_password, dbname = db_name, host = db_host, port = db_port)
@@ -37,7 +37,7 @@ studentRegistration <- read.csv("studentRegistration.csv", header = TRUE)
 
 ## Write data to the DB using the DBI package
 ```{r}
-#List the tables in the DB
+#List the tables in the DB - should be zero
 dbListTables(mydb)
 
 #Write a new table to the DB
