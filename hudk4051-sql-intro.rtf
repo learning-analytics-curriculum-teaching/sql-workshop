@@ -1,0 +1,140 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2577
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 ArialMT;\f1\froman\fcharset0 Times-Roman;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Welcome to HUDK4051: Learning Analytics, Theory and Practice. Over the semester you will be completing seven small projects.
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 What:\'a0
+\f1\fs24 \
+
+\f0\fs29\fsmilli14667 The first project you will be working on involves everyone\'92s favorite Global Technology Tyrant, efficient storage and access to data and Sequel - not those sequels - This SQL: the structured query language used to manipulate relational databases.
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 Why:\'a0
+\f1\fs24 \
+
+\f0\fs29\fsmilli14667 Databases and their manipulation are really the foundation of any data science project. If we can\'92t get the data, we can\'92t do anything.
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 How:\'a0
+\f1\fs24 \
+
+\f0\fs29\fsmilli14667 So we are going to 1. explore some basic SQL theory, then we will 2. set up a remote server using Amazon Web Services, 3. Access the server through RStudio and then 4. run some basic SQL commands.\'a0\'a0
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 All the information you will need is contained in the SQL repository on Github. If you have not used Github before, or a little rusty, please sign up for office hours so we can cover the basics.
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 One unknown in this project is AWS China. Anyone located in China will have to use AWS China, which is a partnership between Amazon and two local companies Sinnet and NWCD. Since I cannot access this service from the US I can\'92t test the project with it. I am hoping that it has a similar feature set and organization to Amazon in the US but in which case we will need to adjust the project for students located in China.\'a0
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 Also, to use the AWS service you will need an Amazon account with a credit card attached to it. You should not be charged any money as we only use free services, but you will need a credit card to create the account.
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 With those two caveats, let\'92s move on to some background about SQL.
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 Here is a diagram of the basic data science workflow that could exist in a company. This will vary from organization to organization and position titles will be different. In a startup you might be expected to do all these jobs whereas in a large company there could be a whole team in each position. But as an average approximation this isn\'92t too bad.\'a0
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 At the bottom you can see a database manager and a data engineer. These positions set up and maintain databases, making sure that they are organized and connected in rational ways. Students graduating from the Learning Analytics program do not usually go into these kinds of jobs, rather, they are looking at data analyst or data scientist positions. The connection between the analyst and the engineer is a very important one though and any data analyst or scientist needs to be able to understand how database engineers communicate and think about data. If that connection isn\'92t functioning then the organization may as well not have a data scientist on staff.\'a0
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 So let\'92s start with some terminology that you may have already come across. There are two big categories of database: relational and non-relational databases. Here are some of the products that belong in each category. We are going to concentrate on the relation databases here but it is worth mentioning the non-relational as they tend to get more hype. The reason for this is largely because non-relational databases serve an important purpose in App and online software development. Relational databases have been around a long time, they are reliable and stable but they have one major drawback - they do not scale quickly. They cannot handle the kind of exponential growth in users that many apps are trying to achieve. So that is where non-relational databases come in. They can be more difficult to work with but they serve a specific purpose - they can scale fast. That said, the vast, vast majority of databases in use in the world are relational databases.\'a0
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 So what do we mean when we say relational databases. A relational database refers to the relationships between tables. The idea is to link different tables that consist of rows and columns like through key variables. For example, we might have a student table representing student attributes such as usernames and email addresses, a lesson table that represents data extracted from a learning management system about lessons and a game table that contains variables about activity in an educational game. In each case the primary or unique key variable is used to define the relationships between the tables. The primary key variable may be invisible sometimes but is necessary to make the system work. You may have seen these relationships represented by an ER Diagram like this one that describes the data we will be using in this project, the Open University Learning Analytics data set. Here lines between tables represent the relationships with a double line at one end representing one and only one variable and multiple diagonal lines at the other representing many. So a relationship between one variable from one table to many variables in another.\'a0
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 Although non-relational databases are growing in popularity for web-based use cases, relational databases remain the most commonly used data storage systems as you can see from this list where 6 of the top ten most commonly used relational databases by number of customers and amount of data stored according to db-engines.com
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 The bottom line is that no matter where you go in the data science world, at some point you will need to work directly with a relational database or with someone who is working with a relational database. That means you will need to speak the language of relational databases and that is Structured Query Language or SQL.
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 SQL was developed at IBM by these handsome devils back in a time where computer scientists wore ties and had non-ironic pencil mustaches. Todd Codd came up with the theory behind the language and its use of relational algebra and Ray Boyce and Donald Chamberlin implemented the first versions. The main benefit at that time was that data could be queried without having specify a file path or index number. For those of you familiar with R, imagine doing analysis but you had to specify the location of every cell you wanted to include in your formula - it would take forever! SQL is maintained by companies largely for their own use so there can be differences in syntax across different databases depending on which one you are using. But the basic structure of statements is pretty standardized.\'a0
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 There are four fundamental functions in SQL that have the delightful acronym CRUD. CRUD stands for CREATE, READ, UPDATE, DELETE which corresponds to adding rows, loading data, changing data and removing data. The SQL commands for each of these functions are: INSERT, SELECT, UPDATE and DELETE. We will go over each of these in the project.
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 A basic statement in SQL is less complicated than R or Python. It is made up of command that is connected to a table through clauses and modified by some kind of logical statement. Here we are reading in the students table but only those rows where the gender column is \'93female\'94 . Two important conventions to note are: 1. A statement ends with a semicolon and 2. Commands are capitalized tables are lower case. Now these are just conventions. In many cases the code will run if you don\'92t capitalize and use semicolons but the conventions generally make your code easier for humans to read. So if you or anyone else needs to read your code and understand it is a good idea to stick to the conventions.
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 Complexity in SQL comes from stringing together a lot of simple commands. The basic commands you can learn very quickly but it is very much a rote exercise. You just need to plough through the commands and practice them. There are a lot of good online resources for doing this. One I quite like is the SoloLearn App that you can do on your phone. But anything that lets you practice the basic commands will do, Data Camp or CodeAcademy, whatever works for you.\'a0
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 The other way to practice is to create a database and start manipulating data and that is what we are going to do over the next week. The reason for doing this is that for many technical jobs a SQL test is part of the application process. Even for jobs that will never involve SQL. It is a kind of gate keeper skill that everyone has to know. So it is worth learning the basics now and then if you take HUDK5053 in the summer we will give you a mock test so that you will know if you are prepared for the job process. A good site to explore SQL test preparation is Leetcode.com
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf2 So in this project, you will be setting up a relational database within the cloud on Amazon Web Services. I have included a link to AWS documentation and videos for you to explore. Once you have set up the AWS instance and loaded your database you will then remotely access it through RStudio and load data. You will then use R code to run some simple SQL commands. Once you have done this you can pull request your work back to Gituhub. If you are unfamiliar with Github, please sign up for Office Hours so we can help you through that.
+\f1\fs24 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+\
+\
+}
